@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Koçak Sulama</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #006994 0%, #004d6b 25%, #0081a7 50%, #00afb9 75%, #90e0ef 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .construction-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(144, 224, 239, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 175, 185, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 129, 167, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-section {
+            margin-bottom: 40px;
+            animation: fadeInDown 1.2s ease-out;
+        }
+
+        .logo-placeholder {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-placeholder:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .logo-text {
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-subtext {
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        .pipe-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .pipe-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+        }
+
+        .pipe-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            width: 40px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 4px;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1.2s ease-out 0.3s both;
+            background: linear-gradient(45deg, #fff 0%, #e0f7fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+            animation: fadeInUp 1.2s ease-out 0.6s both;
+            font-weight: 300;
+        }
+
+        .construction-notice {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 40px;
+            animation: fadeInUp 1.2s ease-out 0.9s both;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+
+        .construction-title {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .construction-icon {
+            width: 40px;
+            height: 40px;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .construction-icon::before {
+            content: '⚙️';
+            font-size: 20px;
+        }
+
+        .construction-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1.2s ease-out calc(1.2s + var(--delay)) both;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card:nth-child(1) { --delay: 0s; }
+        .feature-card:nth-child(2) { --delay: 0.2s; }
+        .feature-card:nth-child(3) { --delay: 0.4s; }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .feature-title {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .feature-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .map-section {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1.2s ease-out 1.5s both;
+        }
+
+        .map-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-header {
+            padding: 25px 25px 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .map-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .map-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .interactive-map {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .interactive-map iframe {
+            width: 100%;
+            height: 100%;
+            filter: brightness(0.9) contrast(1.1) saturate(0.8);
+            transition: filter 0.3s ease;
+        }
+
+        .interactive-map:hover iframe {
+            filter: brightness(1) contrast(1.2) saturate(1);
+        }
+
+        .map-footer {
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .address-info {
+            flex: 1;
+        }
+
+        .address-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .address-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .address-icon {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .address-text {
+            flex: 1;
+        }
+
+        .directions-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+            flex-shrink: 0;
+        }
+
+        .directions-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .directions-button .button-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .directions-button:hover .button-arrow {
+            transform: rotate(360deg);
+        }
+
+        .contact-section {
+            width: 100%;
+            max-width: 600px;
+            animation: fadeInUp 1.2s ease-out 1.8s both;
+        }
+
+        .whatsapp-contact {
+            background: rgba(37, 211, 102, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 2px solid rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .whatsapp-contact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(37, 211, 102, 0.1), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        .whatsapp-contact:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(37, 211, 102, 0.2);
+        }
+
+        .whatsapp-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .whatsapp-content {
+            flex: 1;
+        }
+
+        .whatsapp-title {
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .whatsapp-text {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .whatsapp-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .button-arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-button:hover .button-arrow {
+            transform: translateX(5px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            width: 0%;
+            border-radius: 4px;
+            animation: progressLoad 3s ease-out 1s both;
+        }
+
+        @keyframes progressLoad {
+            to { width: 75%; }
+        }
+
+        .progress-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: floatUp 6s infinite ease-in-out;
+        }
+
+        .bubble:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bubble:nth-child(2) {
+            width: 20px;
+            height: 20px;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .bubble:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            left: 70%;
+            animation-delay: 4s;
+        }
+
+        .bubble:nth-child(4) {
+            width: 30px;
+            height: 30px;
+            left: 80%;
+            animation-delay: 1s;
+        }
+
+        @keyframes floatUp {
+            0% {
+                bottom: -100px;
+                opacity: 0;
+                transform: translateX(0px) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 100vh;
+                opacity: 0;
+                transform: translateX(-100px) rotate(360deg);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            animation: fadeInUp 1.5s ease-out 2s both;
+        }
+
+        .floating-whatsapp-button {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-whatsapp-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .floating-whatsapp-button:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.5);
+        }
+
+        .floating-whatsapp-button:hover::before {
+            opacity: 1;
+        }
+
+        .floating-whatsapp-icon {
+            width: 35px;
+            height: 35px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-8px);
+            }
+            60% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Notification pulse */
+        .floating-whatsapp-button::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #ff4444;
+            border-radius: 50%;
+            border: 3px solid white;
+            animation: pulse-notification 2s infinite;
+        }
+
+        @keyframes pulse-notification {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        /* Tooltip */
+        .floating-whatsapp-tooltip {
+            position: absolute;
+            right: 75px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .floating-whatsapp-tooltip::after {
+            content: '';
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 6px solid transparent;
+            border-left-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .floating-whatsapp:hover .floating-whatsapp-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(-10px);
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .floating-whatsapp {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .floating-whatsapp-button {
+                width: 60px;
+                height: 60px;
+            }
+
+            .floating-whatsapp-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .floating-whatsapp-tooltip {
+                right: 70px;
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .construction-notice {
+                padding: 25px;
+                margin-bottom: 30px;
+            }
+            
+            .construction-title {
+                font-size: 1.5rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .contact-info {
+                padding: 20px;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .construction-notice {
+                padding: 20px;
+            }
+            
+            .contact-item {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="construction-bg"></div>
+    
+    <div class="floating-elements">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
+
+    <div class="container">
+        <div class="logo-section">
+            <div class="logo-placeholder">
+                <div class="logo-text">KOÇAK SULAMA</div>
+                <div class="logo-subtext">Logo Alanı</div>
+            </div>
+            <h1 class="main-title">Koçak Sulama</h1>
+            <p class="subtitle">Su Borusu ve Sulama Sistemleri Perakende Satış</p>
+        </div>
+
+        <div class="construction-notice">
+            <h2 class="construction-title">
+                <div class="construction-icon"></div>
+                Sitemiz Yapım Aşamasında
+            </h2>
+            <p class="construction-text">
+                Modern ve kullanıcı dostu web sitemiz üzerinde çalışmalarımız devam ediyor. 
+                En kısa sürede sizlerle buluşacak olan yeni sitemizde tüm ürün ve hizmetlerimizi detaylı olarak inceleyebileceksiniz.
+            </p>
+            
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p class="progress-text">Tamamlanma: %75</p>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <span class="feature-icon">🏪</span>
+                <h3 class="feature-title">Perakende Satış</h3>
+                <p class="feature-desc">Mağazamızdan direkt satış, tüm ürünleri görüp alabilirsiniz</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">💧</span>
+                <h3 class="feature-title">Sulama Sistemleri</h3>
+                <p class="feature-desc">Damla sulama, yağmurlama ve bahçe sulama çözümleri</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">🔧</span>
+                <h3 class="feature-title">Montaj Desteği</h3>
+                <p class="feature-desc">Ürün satışı ile birlikte montaj danışmanlık hizmeti</p>
+            </div>
+        </div>
+
+        <div class="map-section">
+            <div class="map-container">
+                <div class="map-header">
+                    <h3 class="map-title">🗺️ Mağaza Konumumuz</h3>
+                    <p class="map-subtitle">Koçak Sulama - Ziyaret etmek için tıklayın</p>
+                </div>
+                <div class="interactive-map">
+                    <iframe 
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3068.266238386672!2d32.74099257668183!3d39.97228557151671!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14d349b2730c313f%3A0x8e015a155471ece0!2sKo%C3%A7ak%20Sulama%20%C4%B0n%C5%9Faat%20Malzemeleri%20Ltd.%20%C5%9Eti.!5e0!3m2!1str!2str!4v1734097600000!5m2!1str!2str"
+                        width="100%" 
+                        height="300" 
+                        style="border:0; border-radius: 10px;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="map-footer">
+                    <div class="address-info">
+                        <div class="address-item">
+                            <span class="address-icon">📍</span>
+                            <span class="address-text">OSTİM - OSB, 1567. Sokak, No:32 Yenimahalle/Ankara</span>
+                        </div>
+                        <div class="address-item">
+                            <span class="address-icon">🕒</span>
+                            <span class="address-text">Pazartesi-Cumartesi: 08:00-19:00 | Pazar: 09:00-17:00</span>
+                        </div>
+                    </div>
+                    <a href="https://maps.google.com/?q=39.9334,32.8597" target="_blank" class="directions-button">
+                        <span>Yol Tarifi Al</span>
+                        <span class="button-arrow">🧭</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <div class="whatsapp-contact">
+                <div class="whatsapp-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.486"/>
+                    </svg>
+                </div>
+                <div class="whatsapp-content">
+                    <h3 class="whatsapp-title">WhatsApp İletişim</h3>
+                    <p class="whatsapp-text">Hemen mesaj gönderin, anında yanıt alın</p>
+                    <a href="https://wa.me/905XXXXXXXXX?text=Merhaba,%20su%20borusu%20ürünleri%20hakkında%20bilgi%20almak%20istiyorum." class="whatsapp-button">
+                        <span>Mesaj Gönder</span>
+                        <span class="button-arrow">→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <div class="floating-whatsapp">
+        <a href="https://wa.me/905XXXXXXXXX?text=Merhaba%20Koçak%20Sulama,%20ürünleriniz%20hakkında%20bilgi%20almak%20istiyorum." 
+           class="floating-whatsapp-button" 
+           target="_blank"
+           title="WhatsApp ile iletişim">
+            <svg class="floating-whatsapp-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.486"/>
+            </svg>
+            <div class="floating-whatsapp-tooltip">Hemen mesaj gönderin!</div>
+        </a>
+    </div>
+
+    <script>
+        // Sayfa yüklendiğinde animasyonları başlat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll efekti ekle
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.querySelector('.construction-bg');
+                const speed = scrolled * 0.5;
+                parallax.style.transform = `translateY(${speed}px)`;
+            });
+
+            // Mouse takip efekti
+            document.addEventListener('mousemove', function(e) {
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                const bubbles = document.querySelectorAll('.bubble');
+                bubbles.forEach((bubble, index) => {
+                    const speed = (index + 1) * 0.02;
+                    const x = (mouseX - window.innerWidth / 2) * speed;
+                    const y = (mouseY - window.innerHeight / 2) * speed;
+                    
+                    bubble.style.transform = `translate(${x}px, ${y}px)`;
+                });
+            });
+
+            // Tıklama efekti
+            document.addEventListener('click', function(e) {
+                createClickEffect(e.clientX, e.clientY);
+            });
+
+            function createClickEffect(x, y) {
+                const effect = document.createElement('div');
+                effect.style.position = 'fixed';
+                effect.style.left = x + 'px';
+                effect.style.top = y + 'px';
+                effect.style.width = '20px';
+                effect.style.height = '20px';
+                effect.style.background = 'rgba(255, 255, 255, 0.8)';
+                effect.style.borderRadius = '50%';
+                effect.style.pointerEvents = 'none';
+                effect.style.animation = 'clickPulse 0.6s ease-out';
+                effect.style.transform = 'translate(-50%, -50%)';
+                effect.style.zIndex = '9999';
+                
+                document.body.appendChild(effect);
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 600);
+            }
+
+            // Click pulse animasyonu
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes clickPulse {
+                    0% {
+                        transform: translate(-50%, -50%) scale(0);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translate(-50%, -50%) scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
